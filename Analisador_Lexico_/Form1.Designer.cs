@@ -33,6 +33,7 @@
             this.textBox_File = new System.Windows.Forms.TextBox();
             this.bt_Analize = new System.Windows.Forms.Button();
             this.richTextBox_File = new System.Windows.Forms.RichTextBox();
+            this.bt_Format = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // bt_Browse
@@ -47,35 +48,47 @@
             // 
             // textBox_File
             // 
-            this.textBox_File.Location = new System.Drawing.Point(12, 417);
+            this.textBox_File.Location = new System.Drawing.Point(423, 15);
             this.textBox_File.Multiline = true;
             this.textBox_File.Name = "textBox_File";
-            this.textBox_File.Size = new System.Drawing.Size(695, 21);
+            this.textBox_File.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.textBox_File.Size = new System.Drawing.Size(284, 396);
             this.textBox_File.TabIndex = 1;
-            this.textBox_File.Visible = false;
             // 
             // bt_Analize
             // 
-            this.bt_Analize.Location = new System.Drawing.Point(713, 42);
+            this.bt_Analize.Location = new System.Drawing.Point(713, 116);
             this.bt_Analize.Name = "bt_Analize";
             this.bt_Analize.Size = new System.Drawing.Size(75, 23);
             this.bt_Analize.TabIndex = 2;
             this.bt_Analize.Text = "Analize";
             this.bt_Analize.UseVisualStyleBackColor = true;
+            this.bt_Analize.Click += new System.EventHandler(this.bt_Analize_Click);
             // 
             // richTextBox_File
             // 
             this.richTextBox_File.Location = new System.Drawing.Point(12, 12);
             this.richTextBox_File.Name = "richTextBox_File";
-            this.richTextBox_File.Size = new System.Drawing.Size(695, 399);
+            this.richTextBox_File.Size = new System.Drawing.Size(322, 399);
             this.richTextBox_File.TabIndex = 3;
             this.richTextBox_File.Text = "";
+            // 
+            // bt_Format
+            // 
+            this.bt_Format.Location = new System.Drawing.Point(713, 42);
+            this.bt_Format.Name = "bt_Format";
+            this.bt_Format.Size = new System.Drawing.Size(75, 23);
+            this.bt_Format.TabIndex = 4;
+            this.bt_Format.Text = "Format";
+            this.bt_Format.UseVisualStyleBackColor = true;
+            this.bt_Format.Click += new System.EventHandler(this.bt_Format_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.bt_Format);
             this.Controls.Add(this.richTextBox_File);
             this.Controls.Add(this.bt_Analize);
             this.Controls.Add(this.textBox_File);
@@ -94,6 +107,7 @@
         private System.Windows.Forms.TextBox textBox_File;
         private System.Windows.Forms.Button bt_Analize;
         private System.Windows.Forms.RichTextBox richTextBox_File;
+        private System.Windows.Forms.Button bt_Format;
     }
 }
 
