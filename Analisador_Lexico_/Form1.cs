@@ -97,24 +97,31 @@ namespace Analisador_Lexico_
             return listaTemporaria.Cast<int>().ToArray();
         }
 
-        int compara_palavras = 0;
         private void converte_caracteres()
         {
 
-            textBox_File.Text  = Regex.Replace(textBox_File.Text, String.Format(@"\b{0}\b", "program"), " 12 ", RegexOptions.None);
-
-
             textBox_File.Text = Regex.Replace(textBox_File.Text, @"\([0-9]\)", "", RegexOptions.Multiline);
-            textBox_File.Text = Regex.Replace(textBox_File.Text, String.Format(@"\b\.\b"), " 13 ", RegexOptions.Multiline);
-            textBox_File.Text = Regex.Replace(textBox_File.Text, String.Format(@"\b{0}\b", ">="), " 29 ", RegexOptions.None);
-
-            textBox_File.Text = Regex.Replace(textBox_File.Text, String.Format(@"\b{0}\b", ">"), " 30 ", RegexOptions.Multiline);
-            textBox_File.Text = Regex.Replace(textBox_File.Text, String.Format(@"\b{0}\b", "="), " 31 ", RegexOptions.Multiline);
-            textBox_File.Text = Regex.Replace(textBox_File.Text, String.Format(@"\b{0}\b", "<>"), " 32 ", RegexOptions.Multiline);
-            textBox_File.Text = Regex.Replace(textBox_File.Text, String.Format(@"\b{0}\b", "<="), " 33 ", RegexOptions.Multiline);
-            textBox_File.Text = Regex.Replace(textBox_File.Text, String.Format(@"\b{0}\b", "<"), " 34 ", RegexOptions.Multiline);
-            //textBox_File.Text = Regex.Replace(textBox_File.Text, String.Format(@"\b{0}\b", "+"), " 35 ", RegexOptions.Multiline);
-            //MessageBox.Show("GZUZ: " );
+            textBox_File.Text = Regex.Replace(textBox_File.Text, (@"{.}"), " 13 ", RegexOptions.Multiline);
+            textBox_File.Text = Regex.Replace(textBox_File.Text, String.Format(@"{0}", "<>"), " 32 ", RegexOptions.None);//Não colocar em ordem, dá errado
+            textBox_File.Text = Regex.Replace(textBox_File.Text, String.Format(@"{0}", ">="), " 29 ", RegexOptions.None);//Não colocar em ordem, dá errado
+            textBox_File.Text = Regex.Replace(textBox_File.Text, String.Format(@"{0}", "<="), " 33 ", RegexOptions.None);//Não colocar em ordem, dá errado
+            textBox_File.Text = Regex.Replace(textBox_File.Text, String.Format(@"{0}", ">"), " 30 ", RegexOptions.None);
+            textBox_File.Text = Regex.Replace(textBox_File.Text, String.Format(@"{0}", "="), " 31 ", RegexOptions.None);   
+            textBox_File.Text = Regex.Replace(textBox_File.Text, String.Format(@"{0}", "<"), " 34 ", RegexOptions.None);
+            textBox_File.Text = Regex.Replace(textBox_File.Text, String.Format(@"(?i)[+]"), " 35 ", RegexOptions.None);// + dá problema assim
+            textBox_File.Text = Regex.Replace(textBox_File.Text, String.Format(@"(?i)[\]]"), " 39 ", RegexOptions.None);
+            textBox_File.Text = Regex.Replace(textBox_File.Text, String.Format(@"(?i)[\[]"), " 40 ", RegexOptions.None);
+            textBox_File.Text = Regex.Replace(textBox_File.Text, String.Format(@"{0}", ";"), " 41 ", RegexOptions.None);
+            textBox_File.Text = Regex.Replace(textBox_File.Text, String.Format(@"{0}", ":"), " 42 ", RegexOptions.None);
+            textBox_File.Text = Regex.Replace(textBox_File.Text, String.Format(@"{0}", "/"), " 43 ", RegexOptions.None);
+            //textBox_File.Text = Regex.Replace(textBox_File.Text, String.Format(@"(?i)[\.\.]"), " 44 ", RegexOptions.None);//Preciso arrumar
+            //textBox_File.Text = Regex.Replace(textBox_File.Text, String.Format(@"(?i)[\.]"), " 45 ", RegexOptions.None);
+            textBox_File.Text = Regex.Replace(textBox_File.Text, String.Format(@"{0}", ","), " 46 ", RegexOptions.None);
+            textBox_File.Text = Regex.Replace(textBox_File.Text, String.Format(@"(?i)[*]"), " 47 ", RegexOptions.None);
+            textBox_File.Text = Regex.Replace(textBox_File.Text, String.Format(@"(?i)[)]"), " 48 ", RegexOptions.None);
+            textBox_File.Text = Regex.Replace(textBox_File.Text, String.Format(@"(?i)[(]"), " 49 ", RegexOptions.None);
+            textBox_File.Text = Regex.Replace(textBox_File.Text, String.Format(@"(?i)[$]"), " 50 ", RegexOptions.None);
+            textBox_File.Text = Regex.Replace(textBox_File.Text, String.Format(@"(?i)[-]"), " 51 ", RegexOptions.None);
 
         }
 
@@ -162,8 +169,7 @@ namespace Analisador_Lexico_
         {
             converte_caracteres();
             converte_palavras();
-            richTextBox_File.Text = textBox_File.Text;
-            //richTextBox_File.Text = RemoveAcentos_BH(instructionLine);
+            
         }
 
 
