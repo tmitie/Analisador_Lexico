@@ -63,7 +63,7 @@
             this.textBox_Input.Multiline = true;
             this.textBox_Input.Name = "textBox_Input";
             this.textBox_Input.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox_Input.Size = new System.Drawing.Size(405, 439);
+            this.textBox_Input.Size = new System.Drawing.Size(402, 415);
             this.textBox_Input.TabIndex = 1;
             this.textBox_Input.Text = "Insira seu código aqui ou abra o de um arquivo .txt.";
             // 
@@ -82,12 +82,12 @@
             this.textBox_Tokens.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox_Tokens.Dock = System.Windows.Forms.DockStyle.Fill;
             this.textBox_Tokens.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox_Tokens.Location = new System.Drawing.Point(454, 3);
+            this.textBox_Tokens.Location = new System.Drawing.Point(451, 3);
             this.textBox_Tokens.Multiline = true;
             this.textBox_Tokens.Name = "textBox_Tokens";
             this.textBox_Tokens.ReadOnly = true;
             this.textBox_Tokens.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox_Tokens.Size = new System.Drawing.Size(405, 439);
+            this.textBox_Tokens.Size = new System.Drawing.Size(402, 415);
             this.textBox_Tokens.TabIndex = 5;
             // 
             // tableLayoutPanel1
@@ -97,7 +97,7 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 21F));
             this.tableLayoutPanel1.Controls.Add(this.textBox_Input, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.textBox_Tokens, 3, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;

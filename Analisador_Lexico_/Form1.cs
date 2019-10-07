@@ -15,6 +15,8 @@ namespace Analisador_Lexico_
 {
     public partial class Form1 : Form
     {
+
+
         List<string> mensagemLinha = new List<string>();
         OpenFileDialog OFD = new OpenFileDialog();
         SaveFileDialog SW;
