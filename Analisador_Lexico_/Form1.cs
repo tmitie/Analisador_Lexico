@@ -17,13 +17,16 @@ namespace Analisador_Lexico_
     {
         List<string> mensagemLinha = new List<string>();
         OpenFileDialog OFD = new OpenFileDialog();
+        SaveFileDialog SW;
         StreamReader SR;
         string fileName = null;
         string path = null;
         string instructionLine = null;
+        string line = null;
 
         bool first_click = true;
         bool flag_comentario_bloco = false;
+        bool flag_comentario_linha = false;
 
         public Form1()
         {
@@ -47,7 +50,7 @@ namespace Analisador_Lexico_
                         instructionLine = textBox_Input.Text;
                         path = OFD.FileName;
                         fileName = Path.GetFileName(OFD.FileName);
-                        
+                        SR.Close();
                     }
 
                 }
@@ -61,7 +64,7 @@ namespace Analisador_Lexico_
 
         }
 
-
+        //AINDA Não está sendo usado
         public int[] retornaVetor()
         {
             //Use o método ReadAllLines da class File, para ler o seu arquivo
@@ -102,8 +105,6 @@ namespace Analisador_Lexico_
         //Transforma os operadores e simbolos de pontuação em tokens
         private string converte_caracteres()
         {
-
-            //instructionLine = Regex.Replace(instructionLine, @"\([0-9]\)", "", RegexOptions.Multiline);
             instructionLine = Regex.Replace(instructionLine, String.Format(@"{0}", "î"), " 17 ", RegexOptions.None);
             instructionLine = Regex.Replace(instructionLine, String.Format(@"{0}", "<>"), " 32 ", RegexOptions.None);//Não colocar em ordem, dá errado
             instructionLine = Regex.Replace(instructionLine, String.Format(@"{0}", ">="), " 29 ", RegexOptions.None);//Não colocar em ordem, dá errado
@@ -123,10 +124,70 @@ namespace Analisador_Lexico_
             instructionLine = Regex.Replace(instructionLine, String.Format(@"(?i)[(]"), " 49 ", RegexOptions.None);
             instructionLine = Regex.Replace(instructionLine, String.Format(@"(?i)[$]"), " 50 ", RegexOptions.None);
             instructionLine = Regex.Replace(instructionLine, String.Format(@"(?i)[-]"), " 51 ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"(?i)/d"), " digito ", RegexOptions.None);
 
             return instructionLine;
         }
 
+        //Não funciona ainda
+        public void verifica_comentario_de_linha()
+        {
+            var caractere = textBox_Input.Text.Split();
+            string[] aux = new string[caractere.Length];
+
+            string[] lines = textBox_Input.Text.Split();
+            int i = 0;
+            
+   
+            foreach (var x in aux)
+            {
+                if (x.ToString() == "%%")//Se encontrar comentario de linha
+                {
+                    flag_comentario_linha = true;
+                    aux[i] = "";
+                    //lines[x] = 2;
+                    MessageBox.Show("Detectou");
+                    // @"^\s*$(\n|\r|\r\n)"
+
+                }
+                if (x == "\n" | x == @"^\s*$(\r)" | x == @"^\s*$(\r\n)" | x == Environment.NewLine)
+                {
+                    MessageBox.Show("Quebra");
+
+                }
+                System.Diagnostics.Debug.WriteLine("COMENTARIO LINHA: " + x.ToString() + Environment.NewLine);
+            }
+            /*
+            foreach (var x in caractere)
+            {
+                if (x.ToString() == "%%")//Se encontrar comentario de linha
+                {
+                    flag_comentario_linha = true;
+                    aux[i] = "";
+                    MessageBox.Show("Detectou");
+                    // @"^\s*$(\n|\r|\r\n)"
+
+                }
+                else if(flag_comentario_linha == true) 
+                {
+                    //Se encontrou quebra de linha, fecha o comentário
+                    if (x.ToString() == @"^\s*$(\n)" | x.ToString() == @"^\s*$(\r)" | x.ToString() == @"^\s*$(\r\n)" | x.ToString()== Environment.NewLine)
+                    {
+                        flag_comentario_linha = false;
+
+                    }
+                    else
+                    {   //Quando não encontrar a quebra de linha, atribui vazio
+                        MessageBox.Show("e agoraaa?");
+                        aux[i] = " ";
+                    }
+                    
+                }
+                textBox_Input.Text += aux[i] + " ";
+                i++;
+            }*/
+            //return instrucao;
+        }
 
         //Usado para verificar pontos simples e duplo e comentarios
         public string verificador_unitario(string instrucao)
@@ -135,8 +196,10 @@ namespace Analisador_Lexico_
             string[] aux = new string[caractere.Length];
             instrucao = "";
             int i = 0;
+
             foreach (var x in caractere)
             {
+                //Verifica abertura de comentário
                 if(x.ToString() == "%*")
                 {
                     flag_comentario_bloco = true;
@@ -145,8 +208,9 @@ namespace Analisador_Lexico_
                     System.Diagnostics.Debug.WriteLine("INSTRUÇÃO " + i + " : " + aux[i].ToString() + Environment.NewLine);
 
                 }
+               
 
-
+                //Usado para verificar pontos simples e duplo
                 if (flag_comentario_bloco == false)
                 {
                     if (x.ToString() == ".")
@@ -170,6 +234,7 @@ namespace Analisador_Lexico_
                 }
 
 
+                //Se  comentário foi aberto, atribui vazio para as pos~ições contidas dentro de %*, até que encontre *%
                 if (flag_comentario_bloco == true)
                 {
                     if (x.ToString() == "*%")
@@ -188,20 +253,10 @@ namespace Analisador_Lexico_
                 }
 
                 instrucao += aux[i] + " ";
-
                 i++;
             }
 
-
-
-            i = 0;
-           /* foreach (var c in instrucao)
-            {
-                System.Diagnostics.Debug.WriteLine("INSTRUÇÃO "+ i + " : " + c.ToString() + Environment.NewLine);
-                i++;
-            }*/
-
-
+            i = 0; 
             return instrucao;
         }
 
@@ -242,6 +297,8 @@ namespace Analisador_Lexico_
             instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "nomestring"), " 38 ", RegexOptions.None);
             instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "real"), " 7 ", RegexOptions.None);
 
+            //instructionLine = Regex.Replace(instructionLine, @"[0-9]", "{" + instructionLine + "}", RegexOptions.Multiline);
+
             return instructionLine;
         }
 
@@ -254,7 +311,7 @@ namespace Analisador_Lexico_
                 textBox_Tokens.Text = instructionLine = verificador_unitario(instructionLine);
                 textBox_Tokens.Text = converte_caracteres();
                 textBox_Tokens.Text = converte_palavras();
-               
+
             }
             catch
             {
@@ -264,7 +321,7 @@ namespace Analisador_Lexico_
             
         }
 
-
+        //AINDA Não está sendo usado
         public static string RemoveAcentos_BH(string _textoNAOFormatado)
         {
             string ret;
@@ -275,6 +332,7 @@ namespace Analisador_Lexico_
             return ret;
         }
 
+        //AINDA Não está sendo usado
         private void bt_Format_Click(object sender, EventArgs e)
         {
  
@@ -293,18 +351,22 @@ namespace Analisador_Lexico_
 
 
 
-        private void textBox_File_First_Click(object sender, EventArgs e)
+        private void salvarSaídaToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
             {
-                if(first_click == true)
-                    textBox_Input.Text = "";
+                SW = new SaveFileDialog();
+                SW.Filter = "Text File|*.txt";
+                SW.Title = "Salvar arquivo como....";
+                SW.ShowDialog();
+                System.IO.File.WriteAllText(SW.FileName, textBox_Tokens.Text);
             }
-            catch 
+            catch
             {
-
+                MessageBox.Show("Erro ao salvar arquivo!");
             }
-        }
+              
 
+        }
     }
 }

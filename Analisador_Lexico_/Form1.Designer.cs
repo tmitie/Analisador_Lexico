@@ -38,6 +38,7 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.abrirArquivoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.analisarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.salvarSaídaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -127,7 +128,8 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.abrirArquivoToolStripMenuItem,
-            this.analisarToolStripMenuItem});
+            this.analisarToolStripMenuItem,
+            this.salvarSaídaToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
@@ -148,6 +150,13 @@
             this.analisarToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.analisarToolStripMenuItem.Text = "Analisar";
             this.analisarToolStripMenuItem.Click += new System.EventHandler(this.bt_Analize_Click);
+            // 
+            // salvarSaídaToolStripMenuItem
+            // 
+            this.salvarSaídaToolStripMenuItem.Name = "salvarSaídaToolStripMenuItem";
+            this.salvarSaídaToolStripMenuItem.Size = new System.Drawing.Size(81, 20);
+            this.salvarSaídaToolStripMenuItem.Text = "Salvar Saída";
+            this.salvarSaídaToolStripMenuItem.Click += new System.EventHandler(this.salvarSaídaToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -181,6 +190,7 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem abrirArquivoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem analisarToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem salvarSaídaToolStripMenuItem;
     }
 }
 
