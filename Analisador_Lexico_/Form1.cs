@@ -24,11 +24,13 @@ namespace Analisador_Lexico_
         string fileName = null;
         string path = null;
         string instructionLine = null;
-        string line = null;
+        string[] instrucao_final = null;
 
-        bool first_click = true;
         bool flag_comentario_bloco = false;
-        bool flag_comentario_linha = false;
+
+        string[] identificadores = new string[50];
+        string[] reais = new string[50];
+        string[] conjunto_de_strings = new string[50];
 
         public Form1()
         {
@@ -66,42 +68,143 @@ namespace Analisador_Lexico_
 
         }
 
-        //AINDA Não está sendo usado
-        public int[] retornaVetor()
+
+
+
+
+
+
+        private string detecta_erros_lexicos(string instrucao)
         {
-            //Use o método ReadAllLines da class File, para ler o seu arquivo
-            string[] arquivo = textBox_Input.Text.Split();
+            var caractere = instrucao.Split();
+            int Cont = 0;
+            instrucao_final = caractere.ToArray();                
+
+            string pattern_identificadores = @"['][_a-zA-Z][_a-zA-Z0-9]*[']";//Match de identificadores
+            string pattern_numeros = @"[0-9]+"; //Identifica numeros inteiros
+            string pattern_real = @"[']?[0-9]*\.?[0-9]+[']"; //Identifica numeros float OK
+            string pattern_string = @"[\!][a-zA-Z0-9\s]*[\!]";//Identifica strings OK
+
+
+            Regex rgx_id = new Regex(pattern_identificadores);
+            Match match_identificadores = rgx_id.Match(instrucao);
+
+            Regex rgx_num = new Regex(pattern_numeros);
+            Match match_numeros = rgx_num.Match(instrucao);
+
+            Regex rgx_real = new Regex(pattern_real);
+            Match match_real = rgx_real.Match(instrucao);
+
+            Regex rgx_string = new Regex(pattern_string, RegexOptions.IgnoreCase);
+            Match match_string = rgx_string.Match(instrucao);
+
+           
             /*
+            Regex aNum = new Regex("[a-zA-Z0-9\\s]");
+            Match match_strings = aNum.Match(instrucao);*/
 
-            foreach (var x in arquivo)
-                System.Diagnostics.Debug.WriteLine(x.ToString() + Environment.NewLine);*/
-
-            MessageBox.Show(arquivo[63].ToString());
-
-            //Criando objeto para guarda numeros, não usei um array de inteiro
-            //pois ainda não sabemos o seu tamanho
-            ArrayList listaTemporaria = new ArrayList();
-
-            //Vendo retorno do arquivo
-            foreach (var linha in arquivo)
+            if (match_identificadores.Success)
             {
-                System.Diagnostics.Debug.WriteLine(linha.ToString() + Environment.NewLine);
-
-                int valor = 19;
-                if (linha == "program")
-                    int.TryParse(linha, out valor);
-
-                
-                //Verificando se o conteudo é numero e atribuindo ao ArrayList
-                if (int.TryParse(linha, out valor))
-                    listaTemporaria.Add(valor);
+                instrucao = Regex.Replace(instrucao, pattern_identificadores, " ID ", RegexOptions.None);
             }
 
+            
+
+            /*
+            while (match_real.Success)
+            {
+                //MessageBox.Show("ENTROU");
+                System.Diagnostics.Debug.WriteLine(match_real.Value + " found REAL at position :" + match_real.Index.ToString());
+                reais[Cont] = match_real.Value;
+                instrucao = Regex.Replace(instrucao, match_real.Value, " REAL ", RegexOptions.None);
+                //match_real.Value[match_real.Index] = "REAL";
+                Cont++;
+                match_real = match_real.NextMatch();
+            }
+            instrucao = Regex.Replace(instrucao, pattern_real, " REAL ", RegexOptions.None);*/
+
+            Cont = 0;
+            while (match_string.Success)
+            {
+                    //System.Diagnostics.Debug.WriteLine(match_string.Value + " found STRING at position :" + match_string.Index.ToString());
+                    conjunto_de_strings[Cont] = match_string.Value;
+                    Cont++;
+                    match_string = match_string.NextMatch();
+            }
+            instrucao = Regex.Replace(instrucao, pattern_string, " STR ", RegexOptions.None);
 
 
-            //Retornando vetor de inteiro usando o método ToArray(), o resultado sera um int[]
-            return listaTemporaria.Cast<int>().ToArray();
+            Cont = 0;
+            foreach (var x in caractere)
+            {
+                if (Regex.IsMatch(x.ToString(), pattern_real))
+                {
+                    System.Diagnostics.Debug.WriteLine(match_real.Value + " found REAL at position :" + match_real.Index.ToString());
+                    reais[Cont] = x;
+                    Cont++;
+                    match_real = match_real.NextMatch();
+                }
+
+            }
+            instrucao = Regex.Replace(instrucao, pattern_real, " REAL ", RegexOptions.None);
+
+            //if(!match_identificadores.Success & !match_string.Success & !match_real.Success)
+
+            caractere = instrucao.Split();
+            string[] aux = new string[caractere.Length];
+            Cont = 0;
+            //MessageBox.Show(caractere.Length.ToString());
+
+            foreach (var x in caractere)
+                {
+                    //System.Diagnostics.Debug.WriteLine("CARACTER {0}: {1}",Cont, x.ToString() + Environment.NewLine);
+                    //aux[Cont] = x.ToString();
+                    
+                    if (x.ToString() == "REAL")
+                    {
+                        aux[Cont] = x.ToString();
+                        System.Diagnostics.Debug.WriteLine("REAL EM {0}: {1}", Cont, aux[Cont] + Environment.NewLine);
+                    }
+
+                    else if (x.ToString() == "ID")
+                    {
+                        aux[Cont] = x.ToString();
+                        System.Diagnostics.Debug.WriteLine("IDNT EM {0}: {1}", Cont, aux[Cont] + Environment.NewLine);
+                    }
+                    else if ( x.ToString() == "STR")
+                    {
+                        aux[Cont] = x.ToString();
+                        System.Diagnostics.Debug.WriteLine("STRI EM {0}: {1}", Cont, aux[Cont] + Environment.NewLine);
+                    }
+                    else if (x.ToString() == String.Empty)
+                    {
+                        aux[Cont] = " ";
+                        System.Diagnostics.Debug.WriteLine("VAZI EM {0}: {1}", Cont, aux[Cont] + Environment.NewLine);
+                    }
+                    else if( Regex.IsMatch(x.ToString(), pattern_numeros))
+                    {
+                        aux[Cont] = x.ToString();
+                        System.Diagnostics.Debug.WriteLine("NUM EM {0}: {1}, com {2}", Cont, aux[Cont],x.ToString() + Environment.NewLine);
+
+                    }
+                    else
+                    {
+                        aux[Cont] = " ";
+                        System.Diagnostics.Debug.WriteLine("DIFERENTE EM {0}: {1}", Cont, x.ToString() + Environment.NewLine);
+                    }
+
+                Cont++;
+                }
+
+            
+            instrucao = String.Concat(aux);
+
+            /*foreach(var x in aux)
+            instrucao = String.Copy(x);*/
+
+                    return instrucao;
         }
+
 
 
         //Transforma os operadores e simbolos de pontuação em tokens
@@ -126,12 +229,13 @@ namespace Analisador_Lexico_
             instructionLine = Regex.Replace(instructionLine, String.Format(@"(?i)[(]"), " 49 ", RegexOptions.None);
             instructionLine = Regex.Replace(instructionLine, String.Format(@"(?i)[$]"), " 50 ", RegexOptions.None);
             instructionLine = Regex.Replace(instructionLine, String.Format(@"(?i)[-]"), " 51 ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"(?i)/d"), " digito ", RegexOptions.None);
+            //instructionLine = Regex.Replace(instructionLine, String.Format(@"(?i)/d"), " digito ", RegexOptions.None);
 
             return instructionLine;
         }
 
         //Não funciona ainda
+        /*
         public void verifica_comentario_de_linha()
         {
             var caractere = textBox_Input.Text.Split();
@@ -187,12 +291,12 @@ namespace Analisador_Lexico_
                 }
                 textBox_Input.Text += aux[i] + " ";
                 i++;
-            }*/
+            }
             //return instrucao;
-        }
+        }*/
 
         //Usado para verificar pontos simples e duplo e comentarios
-        public string verificador_unitario(string instrucao)
+        public string verifica_Pontos_e_Comentarios(string instrucao)
         {
             var caractere = instrucao.Split();
             string[] aux = new string[caractere.Length];
@@ -310,9 +414,11 @@ namespace Analisador_Lexico_
             {
                 instructionLine = textBox_Input.Text;
                 textBox_Input.Text = instructionLine = Regex.Replace(instructionLine, @"^\s*$(\n|\r|\r\n)", "", RegexOptions.Multiline);
-                textBox_Tokens.Text = instructionLine = verificador_unitario(instructionLine);
+                textBox_Tokens.Text = instructionLine = verifica_Pontos_e_Comentarios(instructionLine);
                 textBox_Tokens.Text = converte_caracteres();
                 textBox_Tokens.Text = converte_palavras();
+                textBox_Tokens.Text = detecta_erros_lexicos(instructionLine);
+                //textBox_Tokens.Text = Remove_Erro_Lexico(textBox_Tokens.Text);
 
             }
             catch
@@ -323,15 +429,27 @@ namespace Analisador_Lexico_
             
         }
 
-        //AINDA Não está sendo usado
-        public static string RemoveAcentos_BH(string _textoNAOFormatado)
+        //Remove erros léxicos pelo método pânico
+        public static string Remove_Erro_Lexico(string instrucao)
         {
             string ret;
-            string pattern = @"(?i)[áéíóúàèìòùâêîôûãõç]";
-            string replacement = " | ";
+            string pattern = @"(?i)[áéíóúàèìòùâêîôûãõç¬ºª~°§#@¨&ⁿΦ•▬|\!¹²³£¢ \""/]";
+            string replacement = "";
             Regex rgx = new Regex(pattern);
-            ret = rgx.Replace(_textoNAOFormatado, replacement);
-            return ret;
+
+            try
+            {
+                ret = rgx.Replace(instrucao, replacement); //Remove os caracteres indevidos
+
+                
+
+                return ret;
+            }
+            catch
+            {
+                return ret = "Erro ao remover erros léxicos";
+            }
+
         }
 
         //AINDA Não está sendo usado
