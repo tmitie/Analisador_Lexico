@@ -85,6 +85,10 @@ namespace Analisador_Lexico_
             string pattern_real = @"[']?[0-9]*\.?[0-9]+[']"; //Identifica numeros float OK
             string pattern_string = @"[\!][a-zA-Z0-9\s]*[\!]";//Identifica strings OK
 
+            string wrong_pattern_numbers_with_quotes = @"\""([\d\.]+)\""";
+            string wring_pattern_single_word_quotes = ("\"[\\d\\.]\"");
+            string wrong_pattern_numbers = @"([\d\.]+)";
+            string wrong_pattern_numbers_comma = @"([\d\,]+)";
 
             Regex rgx_id = new Regex(pattern_identificadores);
             Match match_identificadores = rgx_id.Match(instrucao);
@@ -98,40 +102,38 @@ namespace Analisador_Lexico_
             Regex rgx_string = new Regex(pattern_string, RegexOptions.IgnoreCase);
             Match match_string = rgx_string.Match(instrucao);
 
-           
+            bool isInteger;
+            long testNumber = 0L;
+
             /*
             Regex aNum = new Regex("[a-zA-Z0-9\\s]");
             Match match_strings = aNum.Match(instrucao);*/
+            Cont = 0;
+            
 
-            if (match_identificadores.Success)
-            {
-                instrucao = Regex.Replace(instrucao, pattern_identificadores, " ID ", RegexOptions.None);
-            }
 
             
 
-            /*
-            while (match_real.Success)
+
+            Cont = 0;
+            while (match_identificadores.Success)
             {
-                //MessageBox.Show("ENTROU");
-                System.Diagnostics.Debug.WriteLine(match_real.Value + " found REAL at position :" + match_real.Index.ToString());
-                reais[Cont] = match_real.Value;
-                instrucao = Regex.Replace(instrucao, match_real.Value, " REAL ", RegexOptions.None);
-                //match_real.Value[match_real.Index] = "REAL";
+                System.Diagnostics.Debug.WriteLine(match_identificadores.Value + " found IDENTIFIER at position :" + match_identificadores.Index.ToString());
+                identificadores[Cont] = match_identificadores.Value;
                 Cont++;
-                match_real = match_real.NextMatch();
+                match_identificadores = match_identificadores.NextMatch();
             }
-            instrucao = Regex.Replace(instrucao, pattern_real, " REAL ", RegexOptions.None);*/
+            //instrucao = Regex.Replace(instrucao, pattern_identificadores, " ID ", RegexOptions.None);
 
             Cont = 0;
             while (match_string.Success)
             {
-                    //System.Diagnostics.Debug.WriteLine(match_string.Value + " found STRING at position :" + match_string.Index.ToString());
+                    System.Diagnostics.Debug.WriteLine(match_string.Value + " found STRING at position :" + match_string.Index.ToString());
                     conjunto_de_strings[Cont] = match_string.Value;
                     Cont++;
                     match_string = match_string.NextMatch();
             }
-            instrucao = Regex.Replace(instrucao, pattern_string, " STR ", RegexOptions.None);
+            //instrucao = Regex.Replace(instrucao, pattern_string, " STR ", RegexOptions.None);
 
 
             Cont = 0;
@@ -146,9 +148,38 @@ namespace Analisador_Lexico_
                 }
 
             }
-            instrucao = Regex.Replace(instrucao, pattern_real, " REAL ", RegexOptions.None);
+            //instrucao = Regex.Replace(instrucao, pattern_real, " REAL ", RegexOptions.None);
+            /*
+            foreach (var x in instrucao.Split())
+            {
+                isInteger = long.TryParse(x.ToString(), NumberStyles.None, null, out testNumber);
+                string flag_int = isInteger.ToString();
+                //MessageBox.Show(flag_int.ToString());
 
-            //if(!match_identificadores.Success & !match_string.Success & !match_real.Success)
+                if ((Regex.IsMatch(x.ToString(), wrong_pattern_numbers)))
+                {
+                    if (isInteger == false)
+                    {
+                        MessageBox.Show("3" + x);
+                        instrucao = instrucao.Replace(x.ToString(), " WRONG ");
+                    }
+
+                }
+
+                if (Regex.IsMatch(x.ToString(), wrong_pattern_numbers_with_quotes) )
+                {
+                    //MessageBox.Show("1" + x);
+                    instrucao = instrucao.Replace(x.ToString(), "WRONG");
+                }
+                if (Regex.IsMatch(x.ToString(), wring_pattern_single_word_quotes))
+                {
+                    //MessageBox.Show("2" + x);
+                    instrucao = instrucao.Replace(x.ToString(), "WRONG");
+                }
+
+            }*/
+            
+
 
             caractere = instrucao.Split();
             string[] aux = new string[caractere.Length];
@@ -157,23 +188,21 @@ namespace Analisador_Lexico_
 
             foreach (var x in caractere)
                 {
-                    //System.Diagnostics.Debug.WriteLine("CARACTER {0}: {1}",Cont, x.ToString() + Environment.NewLine);
-                    //aux[Cont] = x.ToString();
-                    
-                    if (x.ToString() == "REAL")
+
+                 if (Regex.IsMatch(x.ToString(), pattern_real))
                     {
-                        aux[Cont] = x.ToString();
+                        aux[Cont] = x.ToString() + " ";
                         System.Diagnostics.Debug.WriteLine("REAL EM {0}: {1}", Cont, aux[Cont] + Environment.NewLine);
                     }
 
-                    else if (x.ToString() == "ID")
+                    else if (Regex.IsMatch(x.ToString(), pattern_identificadores))
                     {
-                        aux[Cont] = x.ToString();
+                        aux[Cont] = x.ToString() + " ";
                         System.Diagnostics.Debug.WriteLine("IDNT EM {0}: {1}", Cont, aux[Cont] + Environment.NewLine);
                     }
-                    else if ( x.ToString() == "STR")
+                    else if (Regex.IsMatch(x.ToString(), pattern_string))
                     {
-                        aux[Cont] = x.ToString();
+                        aux[Cont] = x.ToString() + " ";
                         System.Diagnostics.Debug.WriteLine("STRI EM {0}: {1}", Cont, aux[Cont] + Environment.NewLine);
                     }
                     else if (x.ToString() == String.Empty)
@@ -183,10 +212,11 @@ namespace Analisador_Lexico_
                     }
                     else if( Regex.IsMatch(x.ToString(), pattern_numeros))
                     {
-                        aux[Cont] = x.ToString();
+                        aux[Cont] = x.ToString() + " ";
                         System.Diagnostics.Debug.WriteLine("NUM EM {0}: {1}, com {2}", Cont, aux[Cont],x.ToString() + Environment.NewLine);
 
                     }
+                    
                     else
                     {
                         aux[Cont] = " ";
@@ -202,7 +232,7 @@ namespace Analisador_Lexico_
             /*foreach(var x in aux)
             instrucao = String.Copy(x);*/
 
-                    return instrucao;
+            return instrucao;
         }
 
 
@@ -233,68 +263,7 @@ namespace Analisador_Lexico_
 
             return instructionLine;
         }
-
-        //Não funciona ainda
-        /*
-        public void verifica_comentario_de_linha()
-        {
-            var caractere = textBox_Input.Text.Split();
-            string[] aux = new string[caractere.Length];
-
-            string[] lines = textBox_Input.Text.Split();
-            int i = 0;
-            
-   
-            foreach (var x in aux)
-            {
-                if (x.ToString() == "%%")//Se encontrar comentario de linha
-                {
-                    flag_comentario_linha = true;
-                    aux[i] = "";
-                    //lines[x] = 2;
-                    MessageBox.Show("Detectou");
-                    // @"^\s*$(\n|\r|\r\n)"
-
-                }
-                if (x == "\n" | x == @"^\s*$(\r)" | x == @"^\s*$(\r\n)" | x == Environment.NewLine)
-                {
-                    MessageBox.Show("Quebra");
-
-                }
-                System.Diagnostics.Debug.WriteLine("COMENTARIO LINHA: " + x.ToString() + Environment.NewLine);
-            }
-            /*
-            foreach (var x in caractere)
-            {
-                if (x.ToString() == "%%")//Se encontrar comentario de linha
-                {
-                    flag_comentario_linha = true;
-                    aux[i] = "";
-                    MessageBox.Show("Detectou");
-                    // @"^\s*$(\n|\r|\r\n)"
-
-                }
-                else if(flag_comentario_linha == true) 
-                {
-                    //Se encontrou quebra de linha, fecha o comentário
-                    if (x.ToString() == @"^\s*$(\n)" | x.ToString() == @"^\s*$(\r)" | x.ToString() == @"^\s*$(\r\n)" | x.ToString()== Environment.NewLine)
-                    {
-                        flag_comentario_linha = false;
-
-                    }
-                    else
-                    {   //Quando não encontrar a quebra de linha, atribui vazio
-                        MessageBox.Show("e agoraaa?");
-                        aux[i] = " ";
-                    }
-                    
-                }
-                textBox_Input.Text += aux[i] + " ";
-                i++;
-            }
-            //return instrucao;
-        }*/
-
+        
         //Usado para verificar pontos simples e duplo e comentarios
         public string verifica_Pontos_e_Comentarios(string instrucao)
         {
@@ -418,7 +387,7 @@ namespace Analisador_Lexico_
                 textBox_Tokens.Text = converte_caracteres();
                 textBox_Tokens.Text = converte_palavras();
                 textBox_Tokens.Text = detecta_erros_lexicos(instructionLine);
-                //textBox_Tokens.Text = Remove_Erro_Lexico(textBox_Tokens.Text);
+                textBox_Tokens.Text = Remove_Erro_Lexico(textBox_Tokens.Text);
 
             }
             catch
@@ -434,7 +403,7 @@ namespace Analisador_Lexico_
         {
             string ret;
             string pattern = @"(?i)[áéíóúàèìòùâêîôûãõç¬ºª~°§#@¨&ⁿΦ•▬|\!¹²³£¢ \""/]";
-            string replacement = "";
+            string replacement = " ";
             Regex rgx = new Regex(pattern);
 
             try

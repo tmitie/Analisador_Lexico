@@ -140,6 +140,7 @@
             // abrirArquivoToolStripMenuItem
             // 
             this.abrirArquivoToolStripMenuItem.Name = "abrirArquivoToolStripMenuItem";
+            this.abrirArquivoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
             this.abrirArquivoToolStripMenuItem.Size = new System.Drawing.Size(90, 20);
             this.abrirArquivoToolStripMenuItem.Text = "Abrir Arquivo";
             this.abrirArquivoToolStripMenuItem.Click += new System.EventHandler(this.bt_abrir_arquivo_Click);
@@ -147,6 +148,7 @@
             // analisarToolStripMenuItem
             // 
             this.analisarToolStripMenuItem.Name = "analisarToolStripMenuItem";
+            this.analisarToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Space)));
             this.analisarToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.analisarToolStripMenuItem.Text = "Analisar";
             this.analisarToolStripMenuItem.Click += new System.EventHandler(this.bt_Analize_Click);
@@ -154,6 +156,7 @@
             // salvarSaídaToolStripMenuItem
             // 
             this.salvarSaídaToolStripMenuItem.Name = "salvarSaídaToolStripMenuItem";
+            this.salvarSaídaToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
             this.salvarSaídaToolStripMenuItem.Size = new System.Drawing.Size(81, 20);
             this.salvarSaídaToolStripMenuItem.Text = "Salvar Saída";
             this.salvarSaídaToolStripMenuItem.Click += new System.EventHandler(this.salvarSaídaToolStripMenuItem_Click);
