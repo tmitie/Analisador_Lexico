@@ -191,18 +191,18 @@ namespace Analisador_Lexico_
 
                  if (Regex.IsMatch(x.ToString(), pattern_real))
                     {
-                        aux[Cont] = x.ToString() + " ";
+                        aux[Cont] = " 7 " + x.ToString();
                         System.Diagnostics.Debug.WriteLine("REAL EM {0}: {1}", Cont, aux[Cont] + Environment.NewLine);
                     }
 
                     else if (Regex.IsMatch(x.ToString(), pattern_identificadores))
                     {
-                        aux[Cont] = x.ToString() + " ";
+                        aux[Cont] = " 16 " + x.ToString() ;
                         System.Diagnostics.Debug.WriteLine("IDNT EM {0}: {1}", Cont, aux[Cont] + Environment.NewLine);
                     }
                     else if (Regex.IsMatch(x.ToString(), pattern_string))
                     {
-                        aux[Cont] = x.ToString() + " ";
+                        aux[Cont] = " 5 " + x.ToString() + " ";
                         System.Diagnostics.Debug.WriteLine("STRI EM {0}: {1}", Cont, aux[Cont] + Environment.NewLine);
                     }
                     else if (x.ToString() == String.Empty)
@@ -456,6 +456,19 @@ namespace Analisador_Lexico_
             }
               
 
+        }
+
+        private void visualizarAutômatoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                System.Diagnostics.Process.Start("https://drive.google.com/file/d/1wfmopC3mEFdXVNan-lZdaoaMBhbQ7gfW/view?usp=sharing");
+            }
+            catch
+            {
+                MessageBox.Show("https://drive.google.com/file/d/1wfmopC3mEFdXVNan-lZdaoaMBhbQ7gfW/view?usp=sharing","Erro ao acessar Link, tente manualmente.");
+            }
+            
         }
     }
 }

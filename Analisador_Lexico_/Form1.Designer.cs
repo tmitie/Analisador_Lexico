@@ -39,6 +39,7 @@
             this.abrirArquivoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.analisarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.salvarSaídaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.visualizarAutômatoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -129,7 +130,8 @@
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.abrirArquivoToolStripMenuItem,
             this.analisarToolStripMenuItem,
-            this.salvarSaídaToolStripMenuItem});
+            this.salvarSaídaToolStripMenuItem,
+            this.visualizarAutômatoToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
@@ -160,6 +162,13 @@
             this.salvarSaídaToolStripMenuItem.Size = new System.Drawing.Size(81, 20);
             this.salvarSaídaToolStripMenuItem.Text = "Salvar Saída";
             this.salvarSaídaToolStripMenuItem.Click += new System.EventHandler(this.salvarSaídaToolStripMenuItem_Click);
+            // 
+            // visualizarAutômatoToolStripMenuItem
+            // 
+            this.visualizarAutômatoToolStripMenuItem.Name = "visualizarAutômatoToolStripMenuItem";
+            this.visualizarAutômatoToolStripMenuItem.Size = new System.Drawing.Size(125, 20);
+            this.visualizarAutômatoToolStripMenuItem.Text = "Visualizar Autômato";
+            this.visualizarAutômatoToolStripMenuItem.Click += new System.EventHandler(this.visualizarAutômatoToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -194,6 +203,7 @@
         private System.Windows.Forms.ToolStripMenuItem abrirArquivoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem analisarToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem salvarSaídaToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem visualizarAutômatoToolStripMenuItem;
     }
 }
 
