@@ -28,11 +28,13 @@ namespace Analisador_Lexico_
         string instructionLine = null;
         string[] instrucao_final = null;
 
-        bool flag_comentario_bloco = false;
+        bool[] flag_pertence_gramatica;
 
         string[] identificadores = new string[50];
         string[] reais = new string[50];
         string[] conjunto_de_strings = new string[50];
+        string[] conjunto_de_integers = new string[50];
+        string[] conjunto_erros = new string[1000];
 
         string[] lines = new string[100];
 
@@ -72,14 +74,17 @@ namespace Analisador_Lexico_
 
         private string detecta_erros_lexicos(string instrucao)
         {
+            instrucao = instrucao.Replace("\n", "º");
+            instrucao = instrucao.Replace(" ", "ª");
             var caractere = instrucao.Split();
             int Cont = 0;
             instrucao_final = caractere.ToArray();                
 
-            string pattern_identificadores = @"['][_a-zA-Z][_a-zA-Z0-9]*[']";//Match de identificadores
-            string pattern_numeros = @"[0-9]+"; //Identifica numeros inteiros
+            string pattern_identificadores = @"['][_a-zA-Z][_a-zA-Z]*[']";//Match de identificadores
+            string pattern_numeros = @"['][0-9]+[']"; //Identifica numeros inteiros
             string pattern_real = @"[']?[0-9]*\.?[0-9]+[']"; //Identifica numeros float OK
-            string pattern_string = @"[\!][a-zA-Z0-9\s]*[\!]";//Identifica strings OK
+ 
+            string pattern_string = @"[\!][_ªa-zA-Z0-9\s]*[\!]";//Identifica strings OK PAREI AQIII, ELE IDENTIFICA
 
             string wrong_pattern_numbers_with_quotes = @"\""([\d\.]+)\""";
             string wring_pattern_single_word_quotes = ("\"[\\d\\.]\"");
@@ -98,20 +103,28 @@ namespace Analisador_Lexico_
             Regex rgx_string = new Regex(pattern_string, RegexOptions.IgnoreCase);
             Match match_string = rgx_string.Match(instrucao);
 
-            bool isInteger;
-            long testNumber = 0L;
+            flag_pertence_gramatica = new bool[instrucao.Length];
 
             /*
             Regex aNum = new Regex("[a-zA-Z0-9\\s]");
             Match match_strings = aNum.Match(instrucao);*/
             Cont = 0;
-            
 
 
-            
+            for(int a = 0; a < identificadores.Length-1; a++)
+            {
+                identificadores[a] = null;
+                reais[a] = null;
+                conjunto_de_strings[a] = null;
+                conjunto_de_integers[a] = null;
+            }
+            for (int a = 0; a < conjunto_erros.Length - 1; a++)
+                conjunto_erros[a] = null;
 
 
-            Cont = 0;
+
+
+            Cont = 0;//Armazena os identificadores encontrados em um vetor
             while (match_identificadores.Success)
             {
                 System.Diagnostics.Debug.WriteLine(match_identificadores.Value + " found IDENTIFIER at position :" + match_identificadores.Index.ToString());
@@ -119,114 +132,196 @@ namespace Analisador_Lexico_
                 Cont++;
                 match_identificadores = match_identificadores.NextMatch();
             }
-            //instrucao = Regex.Replace(instrucao, pattern_identificadores, " ID ", RegexOptions.None);
+            
 
-            Cont = 0;
+            Cont = 0;//Armazenas as string encontradas em um vetor
             while (match_string.Success)
             {
-                    System.Diagnostics.Debug.WriteLine(match_string.Value + " found STRING at position :" + match_string.Index.ToString());
-                    conjunto_de_strings[Cont] = match_string.Value;
-                    Cont++;
-                    match_string = match_string.NextMatch();
+                System.Diagnostics.Debug.WriteLine(match_string.Value + " found STRING at position :" + match_string.Index.ToString());
+                conjunto_de_strings[Cont] = match_string.Value;
+                Cont++;
+                match_string = match_string.NextMatch();
             }
-            //instrucao = Regex.Replace(instrucao, pattern_string, " STR ", RegexOptions.None);
+            //MessageBox.Show(conjunto_de_strings[0]);
 
 
+            Cont = 0;//Armazenas as integers encontrados em um vetor **NÃO MUDAR A ORDEM, SER PRIMEIRO QUE INTEGER**
+            while (match_real.Success)
+            {
+                System.Diagnostics.Debug.WriteLine(match_real.Value + " found REAL at position :" + match_real.Index.ToString());
+                reais[Cont] = match_real.Value;
+                Cont++;
+                match_real = match_real.NextMatch();
+            }
+            //MessageBox.Show(reais[0]);
+
+            Cont = 0;//Armazenas as integers encontrados em um vetor **NÃO MUDAR A ORDEM, SER PRIMEIRO QUE REAL**
+            while (match_numeros.Success)
+            {
+                System.Diagnostics.Debug.WriteLine(match_numeros.Value + " found INTEGER at position :" + match_numeros.Index.ToString());
+                conjunto_de_integers[Cont] = match_numeros.Value;
+                Cont++;
+                match_numeros = match_numeros.NextMatch();
+            }
+            //MessageBox.Show(conjunto_de_integers[1]);
+
+            #region detecta_identificadores
             Cont = 0;
-            foreach (var x in caractere)
+            for (int i = 0; i < identificadores.Length - 1; i++)
             {
-                if (Regex.IsMatch(x.ToString(), pattern_real))
+                if (identificadores[i] == null | identificadores[i] == String.Empty | identificadores[i] == @"\s+")
                 {
-                    System.Diagnostics.Debug.WriteLine(match_real.Value + " found REAL at position :" + match_real.Index.ToString());
-                    reais[Cont] = x;
-                    Cont++;
-                    match_real = match_real.NextMatch();
+                    //MessageBox.Show("vazio");
+                }
+                else
+                {
+                    instrucao = Regex.Replace(instrucao, pattern_identificadores, " { 16, identificador, aast }", RegexOptions.None);
+                }   
+
+            }
+
+           
+            #endregion
+
+            #region detecta_strings
+            Cont = 0;
+            for (int i = 0; i < conjunto_de_strings.Length - 1; i++)
+            {
+                if (conjunto_de_strings[i] == null | conjunto_de_strings[i] == String.Empty | conjunto_de_strings[i] == @"\s+")
+                {
+                    //MessageBox.Show("vazio");
+                }
+                else
+                {
+                    instrucao = Regex.Replace(instrucao, pattern_string, " { 38, nomestring, str }", RegexOptions.None);
                 }
 
             }
-            //instrucao = Regex.Replace(instrucao, pattern_real, " REAL ", RegexOptions.None);
-            /*
-            foreach (var x in instrucao.Split())
+
+
+            #endregion
+
+            
+            #region detecta_reais
+            Cont = 0;
+            for (int i = 0; i < reais.Length - 1; i++)
             {
-                isInteger = long.TryParse(x.ToString(), NumberStyles.None, null, out testNumber);
-                string flag_int = isInteger.ToString();
-                //MessageBox.Show(flag_int.ToString());
-
-                if ((Regex.IsMatch(x.ToString(), wrong_pattern_numbers)))
+                if (reais[i] == null | reais[i] == String.Empty | reais[i] == @"\s+")
                 {
-                    if (isInteger == false)
-                    {
-                        MessageBox.Show("3" + x);
-                        instrucao = instrucao.Replace(x.ToString(), " WRONG ");
-                    }
-
+                    //MessageBox.Show("vazio");
+                }
+                else
+                {
+                    instrucao = Regex.Replace(instrucao, pattern_real, " { 36, numreal, numr }", RegexOptions.None);
                 }
 
-                if (Regex.IsMatch(x.ToString(), wrong_pattern_numbers_with_quotes) )
-                {
-                    //MessageBox.Show("1" + x);
-                    instrucao = instrucao.Replace(x.ToString(), "WRONG");
-                }
-                if (Regex.IsMatch(x.ToString(), wring_pattern_single_word_quotes))
-                {
-                    //MessageBox.Show("2" + x);
-                    instrucao = instrucao.Replace(x.ToString(), "WRONG");
-                }
+            }
 
-            }*/
             
 
+            #endregion
+            
 
-            caractere = instrucao.Split();
-            string[] aux = new string[caractere.Length];
+            #region detecta_integer
             Cont = 0;
-            //MessageBox.Show(caractere.Length.ToString());
-
-            foreach (var x in caractere)
+            for (int i = 0; i < conjunto_de_integers.Length - 1; i++)
+            {
+                if (conjunto_de_integers[i] == null | conjunto_de_integers[i] == String.Empty | conjunto_de_integers[i] == @"\s+")
                 {
+                    //MessageBox.Show("vazio");
+                }
+                else
+                {
+                    instrucao = Regex.Replace(instrucao, pattern_numeros, " { 36, numinteger, intnum }", RegexOptions.None);
+                }
 
-                 if (Regex.IsMatch(x.ToString(), pattern_real))
-                    {
-                        aux[Cont] = " 7 " + x.ToString();
-                        System.Diagnostics.Debug.WriteLine("REAL EM {0}: {1}", Cont, aux[Cont] + Environment.NewLine);
-                    }
+            }
 
-                    else if (Regex.IsMatch(x.ToString(), pattern_identificadores))
-                    {
-                        aux[Cont] = " 16 " + x.ToString() ;
-                        System.Diagnostics.Debug.WriteLine("IDNT EM {0}: {1}", Cont, aux[Cont] + Environment.NewLine);
-                    }
-                    else if (Regex.IsMatch(x.ToString(), pattern_string))
-                    {
-                        aux[Cont] = " 5 " + x.ToString() + " ";
-                        System.Diagnostics.Debug.WriteLine("STRI EM {0}: {1}", Cont, aux[Cont] + Environment.NewLine);
-                    }
-                    else if (x.ToString() == String.Empty)
-                    {
-                        aux[Cont] = " ";
-                        System.Diagnostics.Debug.WriteLine("VAZI EM {0}: {1}", Cont, aux[Cont] + Environment.NewLine);
-                    }
-                    else if( Regex.IsMatch(x.ToString(), pattern_numeros))
-                    {
-                        aux[Cont] = x.ToString() + " ";
-                        System.Diagnostics.Debug.WriteLine("NUM EM {0}: {1}, com {2}", Cont, aux[Cont],x.ToString() + Environment.NewLine);
+            #endregion
 
-                    }
-                    
-                    else
-                    {
-                        aux[Cont] = " ";
-                        System.Diagnostics.Debug.WriteLine("DIFERENTE EM {0}: {1}", Cont, x.ToString() + Environment.NewLine);
-                    }
+            var x = instrucao.Split();
+            Cont = 0;
+            int p, q, r, s;
+            p = q = r = s = 0;
+            foreach (var a in x)
+            {
+                if (a.ToString() == "aast")
+                {
+                    x[Cont] = identificadores[p];
+                    p++;
+                    //MessageBox.Show(x[Cont]);
+                }
+                else if (a.ToString() == "str")
+                {
+                    x[Cont] = conjunto_de_strings[q];
+                    q++;
+                }
+                else if (a.ToString() == "numr")
+                {
+                    x[Cont] = reais[r];
+                    r++;
+                }
+
+
+                else if (a.ToString() == "intnum")
+                {
+                    x[Cont] = conjunto_de_integers[s];
+                    s++;
+                }
+                else
+                {
+                    x[Cont] = a;
+                }
+                System.Diagnostics.Debug.WriteLine("Primeiro print: "+ x[Cont]);
+                Cont++;
+            }
+
+
+
+            string pattern_erro = @"{(.*?)\}";
+            Regex rgx_erro = new Regex(pattern_erro, RegexOptions.ExplicitCapture);
+            Match match_erro = rgx_erro.Match(instrucao);
+            Cont = 0;
+
+            instrucao = null;
+            foreach (var myscore in x)
+            {
+                instrucao += myscore.ToString();
+                System.Diagnostics.Debug.WriteLine("AQUI: "+myscore);
+            }
+
+            instrucao = instrucao.Replace("º", Environment.NewLine);
+            instrucao = instrucao.Replace("ª", " ");
+
+            x = instrucao.Split();
+
+            foreach (var myscore in x)
+            {
+                System.Diagnostics.Debug.WriteLine("Vetor txt: "+myscore);
+            }
+
+            string pattern = @"(?i)[áéíóúàèìòùâêîôûãõç¬ºª~°§#@¨&ⁿΦ•▬\|¹²³£¢\""/]";
+
+            Cont = 0;
+            foreach (var myscore in x)
+            {
+                System.Diagnostics.Debug.WriteLine("Vetor Final {0}: {1}", Cont, myscore);
+
+                textBox_Tokens.Text += myscore + Environment.NewLine;
+                /* if (Regex.IsMatch(myscore.ToString(), pattern))
+                 {
+                     MessageBox.Show("Verifique a sentença: " + myscore.ToString(), "Erro Léxico Detectado");
+
+                 }*/
+                if (!Regex.IsMatch(myscore.ToString(), pattern_erro) && myscore.ToString() != " " && myscore.ToString() != String.Empty)
+                {
+                    MessageBox.Show("Verifique a sentença: " + myscore.ToString(), "Erro Léxico Detectado");
+                }
 
                 Cont++;
-                }
+            }
 
-            
-            instrucao = String.Concat(aux);
 
-            /*foreach(var x in aux)
-            instrucao = String.Copy(x);*/
 
             return instrucao;
         }
@@ -253,27 +348,27 @@ namespace Analisador_Lexico_
         //Transforma os operadores e simbolos de pontuação em tokens
         private string converte_caracteres()
         {
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"{0}", ","), "{ 46, , } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, @"\s\.\.\s", " { 44, ponto duplo } ", RegexOptions.ExplicitCapture);
-            instructionLine = Regex.Replace(instructionLine, @"\s\.", " { 45, ponto } ", RegexOptions.ExplicitCapture);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"{0}", "î"), "  { 17, î } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"{0}", "<>"), " { 32, <> } ", RegexOptions.None);//Não colocar em ordem, dá errado
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"{0}", ">="), " { 29, >= } ", RegexOptions.None);//Não colocar em ordem, dá errado
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"{0}", "{="), " { 33, {= } ", RegexOptions.None);//Não colocar em ordem, dá errado
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"{0}", ">"), " { 30, > } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"{0}", "="), " { 31, = } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"{0}", "<"), " { 34, < } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"(?i)[+]"), " { 35, + } ", RegexOptions.None);// + dá problema assim
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"(?i)[\]]"), " { 39, ] } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"(?i)[\[]"), " { 40, [ } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"{0}", ";"), " { 41, ; } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"{0}", ":"), " { 42, : } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"{0}", "/"), " { 43, / } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"(?i)[*]"), " { 47, *  } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"(?i)[)]"), " { 48, ) } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"(?i)[(]"), " { 49, ( } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"(?i)[$]"), " { 50, $ } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"(?i)[-]"), " { 51, - } ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"{0}", ","), "{46,','} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, @"\s\.\.\s", " {44,ponto duplo} ", RegexOptions.ExplicitCapture);
+            instructionLine = Regex.Replace(instructionLine, @"\s\.", " {45,ponto} ", RegexOptions.ExplicitCapture);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"{0}", "î"), "  {17,î} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"{0}", "<>"), " {32,<>} ", RegexOptions.None);//Não colocar em ordem, dá errado
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"{0}", ">="), " {29,>=} ", RegexOptions.None);//Não colocar em ordem, dá errado
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"{0}", "{="), " {33,{=} ", RegexOptions.None);//Não colocar em ordem, dá errado
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"{0}", ">"), " {30,>} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"{0}", "="), " {31,=} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"{0}", "<"), " {34,<} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"(?i)[+]"), " {35,+} ", RegexOptions.None);// + dá problema assim
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"(?i)[\]]"), " {39,]} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"(?i)[\[]"), " {40,[} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"{0}", ";"), " {41,;} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"{0}", ":"), " {42,:} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"{0}", "/"), " {43,/} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"(?i)[*]"), " {47,*} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"(?i)[)]"), " {48,)} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"(?i)[(]"), " {49,(} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"(?i)[$]"), " {50,$} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"(?i)[-]"), " {51,-} ", RegexOptions.None);
 
             //instructionLine = Regex.Replace(instructionLine, String.Format(@"(?i)/d"), " digito ", RegexOptions.None);
 
@@ -293,13 +388,13 @@ namespace Analisador_Lexico_
                     if (x.ToString() == ".")
                     {
                         //MessageBox.Show("PONTO");
-                        aux[i] = " { 45, . } ";
+                        aux[i] = " {45, .} ";
 
                     }
                     else if (x.ToString() == "..")
                     {
                         //MessageBox.Show("DOIS PONTO");
-                        aux[i] = " { 44, .. } ";
+                        aux[i] = " {44,..} ";
                         //instructionLine = instructionLine.Replace(x, " 44REP ");
                     }
                     else
@@ -343,41 +438,42 @@ namespace Analisador_Lexico_
         //Transforma as constantes em tokens
         private string converte_palavras()
         {
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "write"), " { 0, write }" , RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "while"), " { 1, while } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "until"), " { 2, until } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "to"), " { 3, to } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "then"), " { 4, then } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "string"), " { 5, string } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "repeat"), " { 6, repeat } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "real"), " { 7, real } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "read"), " { 8, read } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "program"), " { 9, program } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "procedure"), " { 10, procedure } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "or"), " { 11, or } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "of"), " { 12, of } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "literal"), " { 13, literal } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "integer"), " { 14, integer } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "if"), " { 15, if } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "identificador"), " { 16, identificador } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "for"), " { 18, for } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "end"), " { 19, end} ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "else"), "{ 20, else } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "do"), " { 21, do } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "declaravariaveis"), " { 22, declaravariaveis } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "const"), " { 23, const } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "char"), " { 24, char } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "chamaprocedure"), " { 25, chamaprocedure } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "begin"), " { 26, begin } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "array"), " { 27, array } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "and"), " { 28, and } ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "numreal"), " { 36, numreal} ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "numinteiro"), " { 37, numinteiro} ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "nomestring"), " { 38, nomestring} ", RegexOptions.None);
-            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "real"), "{ 7, real } ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "write"), " {0,write}" , RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "while"), " {1,while} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "until"), " {2,until} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "to"), " {3,to} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "then"), " {4,then} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "string"), " {5,string} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "repeat"), " {6,repeat} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "real"), " {7,real} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "read"), " {8,read} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "program"), " {9,program} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "procedure"), " {10,procedure} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "or"), " {11,or} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "of"), " {12,of} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "literal"), " {13,literal} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "integer"), " {14,integer} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "if"), " {15,if} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "identificador"), " {16,identificador} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "for"), " {18,for} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "end"), " {19,end} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "else"), "{20,else} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "do"), " {21,do} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "declaravariaveis"), " {22,declaravariaveis} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "const"), " {23,const} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "char"), " {24,char} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "chamaprocedure"), " {25,chamaprocedure} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "begin"), " {26,begin} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "array"), " {27,array} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "and"), " {28,and} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "numreal"), " {36,numreal} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "numinteiro"), " {37,numinteiro} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "nomestring"), " {38,nomestring} ", RegexOptions.None);
+            instructionLine = Regex.Replace(instructionLine, String.Format(@"\b{0}\b", "real"), "{7,real} ", RegexOptions.None);
 
             return instructionLine;
         }
+
 
         private void bt_Analize_Click(object sender, EventArgs e)
         {
@@ -388,7 +484,11 @@ namespace Analisador_Lexico_
                 instructionLine = textBox_Tokens.Text;
                 textBox_Tokens.Text = converte_caracteres();
                 textBox_Tokens.Text = converte_palavras();
-                //textBox_Tokens.Text = detecta_erros_lexicos(instructionLine);
+                textBox_Tokens.Text = "";
+                textBox_Tokens.Text = detecta_erros_lexicos(instructionLine);
+
+
+
                 //textBox_Tokens.Text = Remove_Erro_Lexico(textBox_Tokens.Text);
 
             }
@@ -478,5 +578,7 @@ namespace Analisador_Lexico_
             remove_comentarios();
 
         }
+
+
     }
 }
