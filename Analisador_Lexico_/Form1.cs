@@ -314,7 +314,7 @@ namespace Analisador_Lexico_
 
                  }*/
                 if (!Regex.IsMatch(myscore.ToString(), pattern_erro) && myscore.ToString() != " " && myscore.ToString() != String.Empty)
-                {
+                { 
                     MessageBox.Show("Verifique a sentença: " + myscore.ToString(), "Erro Léxico Detectado");
                 }
 
