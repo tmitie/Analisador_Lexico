@@ -8,8 +8,7 @@
 
 	private static bool isTerminal(int x)
 	{
-        return x < ParserConstants_Fields.FIRST_NON_TERMINAL;
-
+		return x < ParserConstants_Fields.FIRST_NON_TERMINAL;
 	}
 
 	private static bool isNonTerminal(int x)
